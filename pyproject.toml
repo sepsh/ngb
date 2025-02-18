@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "An app"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "fastapi>=0.115.8",
+    "uvicorn[standard]>=0.34.0",
+]
