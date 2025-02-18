@@ -1,5 +1,7 @@
 from sqlmodel import SQLModel, create_engine
 
+from .models import BuyIn, CashOut, Game, Player
+
 # FIXME alembic this
 
 sqlite_file_name = "database.db"
