@@ -1,32 +1,11 @@
+from decimal import Decimal
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import NVARCHAR, Column, Field, SQLModel
 
 
-class Player(SQLModel, table=True):
+class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    username: str
-
-
-class Game(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    started_epoch_64_utc: int
-    finished_epoch_64_utc: int
-
-
-class BuyIn(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    amount: float
-    time_epoch_64_utc: int
-
-    player_id: int = Field(foreign_key="player.id")
-    game_id: int = Field(foreign_key="game.id")
-
-
-class CashOut(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    amount: float
-    time_epoch_64_utc: int
-
-    player_id: int = Field(foreign_key="player.id")
-    game_id: int = Field(foreign_key="game.id")
+    username: str = Field(unique=True)
+    nick_name: str = Field(sa_column=Column(NVARCHAR))
+    balance: Decimal = Field(default=0, max_items=25, decimal_places=5)
