@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from src.data.enums import GameType
+
 
 class UserDTO(BaseModel):
     username: str
@@ -9,3 +11,9 @@ class UserDTO(BaseModel):
 
 class UserBalanceDTO(BaseModel):
     amount: float
+
+
+class GameDTO(BaseModel):
+    title: str
+    description: str | None
+    type_: GameType

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.application.dto import UserDTO
+from src.application.dto import UserDTO, GameDTO
+from src.application.game_service import GameService
 from src.application.user import UserService
-
-from .models import CreateUserRequest, UserBalanceResponse, UserResponse
+from src.utils.db_dependency import get_session
+from .models import CreateUserRequest, UserBalanceResponse, UserResponse, CreateGameResponse, CreateGameRequest
 
 router_v0 = APIRouter()
 
@@ -30,3 +31,14 @@ async def get_user_balance(username: str, user_service: UserService = Depends())
     if balance_dto is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return UserBalanceResponse(amount=balance_dto.amount)
+
+
+@router_v0.post("game/create/", tags=["Game"], response_model=CreateGameResponse)
+async def create_game(
+        request: CreateGameRequest,
+        game_service: GameService = Depends(),
+        session: get_session = Depends()
+):
+    game_dto = GameDTO(title=request.title, description=request.description, type_=request.type_)
+    game_id = game_service.create_game(game=game_dto, session=session)
+    return CreateGameResponse(game_id=game_id)
