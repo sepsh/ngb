@@ -66,4 +66,10 @@ async def deposit(
 @router_v0.post("/user/{username}/withdraw", tags=["User", "Balance"])
 async def withdraw(
     username: str, request: WithdrawRequest, transaction_service: TransactionService = Depends(), session: get_session = Depends()
-): ...
+):
+    transaction_dto = TransactionDTO(
+        username=username,
+        amount=request.amount,
+        transaction_type=TransactionType.WITHDRAW,
+    )
+    transaction_service.withdraw(transaction=transaction_dto, session=session)
