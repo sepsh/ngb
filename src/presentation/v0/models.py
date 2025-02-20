@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class CreateUserRequest(BaseModel):
     username: str
-    nick_name: str
+    nickname: str
 
 
 class UserBalanceResponse(BaseModel):

@@ -10,7 +10,7 @@ router_v0 = APIRouter()
 
 @router_v0.post("/user", tags=["User"])
 async def create_user(request: CreateUserRequest, user_service: UserService = Depends()):
-    user_dto = UserDTO(username=request.username, nick_name=request.nick_name)
+    user_dto = UserDTO(username=request.username, nickname=request.nickname)
     user_service.create_user(user=user_dto)
 
 
