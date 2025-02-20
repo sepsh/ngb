@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from src.data.enums import GameType
 
@@ -21,8 +21,16 @@ class UserResponse(BaseModel):
 class CreateGameRequest(BaseModel):
     title: str
     description: str | None
-    type_: GameType
+    type_: GameType = Field(alias="type")
 
 
 class CreateGameResponse(BaseModel):
     game_id: int
+
+
+class DepositRequest(BaseModel):
+    amount: float
+
+
+class WithdrawRequest(BaseModel):
+    amount: float
