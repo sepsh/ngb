@@ -33,7 +33,7 @@ async def get_user_balance(username: str, user_service: UserService = Depends())
     return UserBalanceResponse(amount=balance_dto.amount)
 
 
-@router_v0.post("game/create/", tags=["Game"], response_model=CreateGameResponse)
+@router_v0.post("/game/create/", tags=["Game"], response_model=CreateGameResponse)
 async def create_game(
         request: CreateGameRequest,
         game_service: GameService = Depends(),
