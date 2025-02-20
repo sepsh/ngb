@@ -11,6 +11,20 @@ class UserService:
     def __init__(self):
         self.engine = self.__create_engine()
 
+    def get_user(self, username: str) -> list[UserDTO]:
+        with Session(self.engine) as session:
+            statement = select(User).where(User.username == username)
+            result = session.exec(statement=statement)
+            user = result.first()
+            return UserDTO(username=user.username, nickname=user.username, balance=user.balance)
+
+    def list_users(self) -> list[UserDTO]:
+        with Session(self.engine) as session:
+            statement = select(User)
+            result = session.exec(statement=statement)
+            users = result.all()
+            return [UserDTO(username=u.username, nickname=u.nickname, balance=u.balance) for u in users]
+
     def create_user(self, user: UserDTO) -> None:
         user_entity = User(username=user.username, nickname=user.nickname)
         with Session(self.engine) as session:

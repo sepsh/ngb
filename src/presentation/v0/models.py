@@ -8,3 +8,9 @@ class CreateUserRequest(BaseModel):
 
 class UserBalanceResponse(BaseModel):
     amount: float
+
+
+class UserResponse(BaseModel):
+    username: str
+    nickname: str
+    balance: float
