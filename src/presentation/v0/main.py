@@ -1,10 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.application.dto import UserDTO, GameDTO
+from src.application.dto import GameDTO, TransactionDTO, UserDTO
 from src.application.game_service import GameService
+from src.application.transaction_service import TransactionService
 from src.application.user import UserService
+from src.data.models import TransactionType
 from src.utils.db_dependency import get_session
-from .models import CreateUserRequest, UserBalanceResponse, UserResponse, CreateGameResponse, CreateGameRequest
+
+from .models import (
+    CreateGameRequest,
+    CreateGameResponse,
+    CreateUserRequest,
+    DepositRequest,
+    UserBalanceResponse,
+    UserResponse,
+    WithdrawRequest,
+)
 
 router_v0 = APIRouter()
 
@@ -33,12 +44,26 @@ async def get_user_balance(username: str, user_service: UserService = Depends())
     return UserBalanceResponse(amount=balance_dto.amount)
 
 
-@router_v0.post("/game/create/", tags=["Game"], response_model=CreateGameResponse)
-async def create_game(
-        request: CreateGameRequest,
-        game_service: GameService = Depends(),
-        session: get_session = Depends()
-):
+@router_v0.post("/game", tags=["Game"], response_model=CreateGameResponse)
+async def create_game(request: CreateGameRequest, game_service: GameService = Depends(), session: get_session = Depends()):
     game_dto = GameDTO(title=request.title, description=request.description, type_=request.type_)
     game_id = game_service.create_game(game=game_dto, session=session)
     return CreateGameResponse(game_id=game_id)
+
+
+@router_v0.post("/user/{username}/deposit", tags=["User", "Balance"])
+async def deposit(
+    username: str, request: DepositRequest, transaction_service: TransactionService = Depends(), session: get_session = Depends()
+):
+    transaction_dto = TransactionDTO(
+        username=username,
+        amount=request.amount,
+        transaction_type=TransactionType.DEPOSIT,
+    )
+    transaction_service.deposit(transaction=transaction_dto, session=session)
+
+
+@router_v0.post("/user/{username}/withdraw", tags=["User", "Balance"])
+async def withdraw(
+    username: str, request: WithdrawRequest, transaction_service: TransactionService = Depends(), session: get_session = Depends()
+): ...

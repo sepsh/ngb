@@ -3,7 +3,7 @@ from src.config.database import SessionLocal
 
 
 def get_session() -> Session:
-    session = SessionLocal()
+    session = SessionLocal
     try:
         yield session
 
