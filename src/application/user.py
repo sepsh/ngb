@@ -12,7 +12,7 @@ class UserService:
         self.engine = self.__create_engine()
 
     def create_user(self, user: UserDTO) -> None:
-        user_entity = User(username=user.username, nick_name=user.nick_name)
+        user_entity = User(username=user.username, nickname=user.nickname)
         with Session(self.engine) as session:
             session.add(user_entity)
             session.commit()
