@@ -5,7 +5,9 @@ description = "An app"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic>=1.14.1",
     "fastapi>=0.115.8",
+    "sqlalchemy>=2.0.38",
     "sqlmodel>=0.0.22",
     "uvicorn[standard]>=0.34.0",
 ]

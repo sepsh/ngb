@@ -1,38 +1,49 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-
-from sqlmodel import NVARCHAR, Column, DateTime, Field, SQLModel, func
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum as SAEnum, func
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 from src.data.enums import GameType
 
+Base = declarative_base()
 
-class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    username: str = Field(unique=True)
-    nickname: str = Field(sa_column=Column(NVARCHAR))
-    balance: float = Field(default=0, max_items=25, decimal_places=5)
+class User(Base):
+    __tablename__ = "user"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, unique=True, nullable=False)
+    nickname = Column(String, nullable=True)
+    balance = Column(Float, default=0)
 
-
-class Game(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    title: str = Field(sa_column=Column(NVARCHAR))
-    description: Optional[str] = Field(sa_column=Column(NVARCHAR))
-    type_: GameType
-    created_at: datetime = Field(default=datetime.now())
+    transactions = relationship("Transaction", back_populates="user")
 
 
-class TransactionType(str, Enum):
+class Game(Base):
+    __tablename__ = "game"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    type_ = Column(SAEnum(GameType), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class TransactionType(Enum):
     BUY_IN = "BUY_IN"
     CASH_OUT = "CASH_OUT"
     DEPOSIT = "DEPOSIT"
     WITHDRAW = "WITHDRAW"
 
 
-class Transaction(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    amount: float = Field(default=0, max_items=25, decimal_places=5)
-    tr_datetime: datetime | None = Field(sa_column=Column(DateTime, server_default=func.now()))
-    transaction_type: TransactionType
-
-    user_id: int = Field(foreign_key="user.id")
+class Transaction(Base):
+    __tablename__ = "transaction"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    amount = Column(Float, default=0, nullable=False)
+    tr_datetime = Column(DateTime, server_default=func.now(), nullable=False)
+    transaction_type = Column(SAEnum(TransactionType), nullable=False)
+    
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("User", back_populates="transactions")
