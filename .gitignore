@@ -1,5 +1,7 @@
 # SQLite
 database.db
+
+# alembic url stuff(you have to create it for every environment by yourself)
 alembic.ini
 
 # Byte-compiled / optimized / DLL files
